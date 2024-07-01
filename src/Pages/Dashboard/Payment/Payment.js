@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import DialogLayoutForFromControl from "../Shared/DialogLayoutForFromControl";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
-import { GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
+import { GoogleAuthProvider } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../Shared/Loading/Loading";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
@@ -18,6 +18,7 @@ import NavbarSkeletonLoader from "./NavbarSkeletonLoader";
 import ForgotPassword from "./ForgotPassword";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+// import ReactPixel from "react-facebook-pixel";
 
 const Payment = () => {
   const {
@@ -50,10 +51,38 @@ const Payment = () => {
   const queryParameters = new URLSearchParams(window.location.search);
   const queryBatch = queryParameters.get("batch");
   const [isBatchPayment, setIsBatchPayment] = useState(false);
+  // const [pixelId, setPixelId] = useState(null);
 
   console.log(queryBatch);
 
   const dateCreated = new Date();
+
+  // useEffect(() => {
+  //   // Fetch the pixel ID based on the organization
+  //   // const fetchPixelId = async () => {
+  //   //   try {
+  //   //     const response = await fetch("/api/get-pixel-id");
+  //   //     const data = await response.json();
+  //   //     setPixelId(754035322177278);
+
+  //   //     // Initialize Meta Pixel after fetching the ID
+  //   //     ReactPixel.init(754035322177278, null, {
+  //   //       autoConfig: true,
+  //   //       debug: false,
+  //   //     });
+  //   //     ReactPixel.pageView(); // Track initial page view
+  //   //   } catch (error) {
+  //   //     console.error("Error fetching pixel ID:", error);
+  //   //   }
+  //   // };
+
+  //   // fetchPixelId();
+  //   ReactPixel.init(754035322177278, null, {
+  //     autoConfig: true,
+  //     debug: false,
+  //   });
+  //   ReactPixel.pageView();
+  // }, []);
 
   useEffect(() => {
     axios
@@ -64,7 +93,9 @@ const Payment = () => {
       .catch((error) => console.error(error));
 
     axios
-      .get(`${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${id}`)
+      .get(
+        `${process.env.REACT_APP_SERVERLESS_API}/api/v1/batches/courseId/${id}`
+      )
       .then((response) => {
         setBatchesData(response?.data);
         if (queryBatch) {
@@ -118,6 +149,11 @@ const Payment = () => {
   };
 
   const handleApplyCoupon = (coupon) => {
+    // ReactPixel.track("Purchase", {
+    //   content_type: "course",
+    //   value: 0.5,
+    //   currency: "USD",
+    // });
     const filteredCoupon = offers.filter(
       (offer) => offer.code === coupon && offer.disabled !== true
     );
@@ -151,8 +187,13 @@ const Payment = () => {
   };
 
   const handleEnroll = async (data) => {
-    console.log("Went to Line 124");
-    console.log("Data =============>", data);
+    // console.log("Went to Line 124");
+    // console.log("Data =============>", data);
+    // ReactPixel.track("Purchase", {
+    //   content_type: "course",
+    //   value: 0.5,
+    //   currency: "USD",
+    // });
     Loading();
     if (+selectedBatch?.price - +couponDiscount === 0) {
       const enrollData = {
@@ -572,10 +613,11 @@ const Payment = () => {
                           {batchesData?.map((item, index) => (
                             <option
                               key={index}
-                              className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${selectedBatch?._id === item?._id
-                                ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
-                                : "text-[#949494]"
-                                }`}
+                              className={`px-3 py-3 text-base border rounded-md font-semibold flex items-center justify-between gap-6 m-1 ${
+                                selectedBatch?._id === item?._id
+                                  ? "text-[#0A98EA] border-t-2 border-t-[#0A98EA]"
+                                  : "text-[#949494]"
+                              }`}
                               value={index}
                               // onClick={() => handleSelectCourse(item)}
                               onMouseDown={() => setSelectedBatch(item)}
@@ -591,40 +633,42 @@ const Payment = () => {
 
                 {selectedBatch?._id && (
                   <>
-                    <div className="mt-3">
-                      <h1 className=" text-black text-base font-[500] ">
-                        Apply Coupon
-                      </h1>
-                      <div className="flex mt-1 border w-full rounded-md bg-white">
-                        <div className="flex justify-between bg-transparent w-full p-2 focus:outline-none">
-                          <input
-                            className="outline-none"
-                            type="text"
-                            placeholder="Enter Coupon Code"
-                            name="coupon"
-                            value={coupon}
-                            onChange={(e) => setCoupon(e.target.value)}
-                          />
-                          <div
-                            onClick={() => {
-                              setCoupon("");
-                              setCouponDiscount(0);
-                            }}
-                            className="cursor-pointer"
-                          >
-                            {coupon.length >= 1 && <HighlightOffRoundedIcon />}
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => handleApplyCoupon(coupon)}
-                          className=" text-[#5e52ff] bg-[#5e52ff0c] p-2 rounded-sm"
-                        >
-                          Apply
-                        </button>
-                      </div>
-                    </div>
                     {offers.length > 0 && (
                       <div className="mt-3">
+                        <div className="mb-3">
+                          <h1 className=" text-black text-base font-[500] ">
+                            Apply Coupon
+                          </h1>
+                          <div className="flex mt-1 border w-full rounded-md bg-white">
+                            <div className="flex justify-between bg-transparent w-full p-2 focus:outline-none">
+                              <input
+                                className="outline-none"
+                                type="text"
+                                placeholder="Enter Coupon Code"
+                                name="coupon"
+                                value={coupon}
+                                onChange={(e) => setCoupon(e.target.value)}
+                              />
+                              <div
+                                onClick={() => {
+                                  setCoupon("");
+                                  setCouponDiscount(0);
+                                }}
+                                className="cursor-pointer"
+                              >
+                                {coupon.length >= 1 && (
+                                  <HighlightOffRoundedIcon />
+                                )}
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => handleApplyCoupon(coupon)}
+                              className=" text-[#5e52ff] bg-[#5e52ff0c] p-2 rounded-sm"
+                            >
+                              Apply
+                            </button>
+                          </div>
+                        </div>
                         <h1 className=" text-gray-400 mb-1 text-base font-[500] ">
                           Applicable Coupons
                         </h1>
@@ -725,8 +769,8 @@ const Payment = () => {
                                   ₹
                                   {selectedBatch?.price
                                     ? Math.round(
-                                      +selectedBatch?.price - +couponDiscount
-                                    )
+                                        +selectedBatch?.price - +couponDiscount
+                                      )
                                     : "N/A"}
                                 </td>
                               </tr>
@@ -744,8 +788,8 @@ const Payment = () => {
                             ₹
                             {selectedBatch?.price
                               ? Math.round(
-                                +selectedBatch?.price - +couponDiscount
-                              )
+                                  +selectedBatch?.price - +couponDiscount
+                                )
                               : "N/A"}
                           </h4>
                         </div>

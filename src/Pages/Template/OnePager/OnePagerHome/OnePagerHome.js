@@ -15,9 +15,9 @@ import leaderIcon from "../../../../assets/OnePager/LearnerBenefit/fluent-mdl2_p
 import compuerIcon from "../../../../assets/OnePager/LearnerBenefit/material-symbols-light_computer-outline.svg";
 import questionIcon from "../../../../assets/OnePager/LearnerBenefit/radix-icons_question-mark-circled.svg";
 import OnePagerHero from "./OnePagerHero";
-import Nikhil from "../../../../assets/OnePager/Reviews/Nikhil.svg";
-import Nikhil1 from "../../../../assets/OnePager/Reviews/Nikhil1.svg";
-import harsh from "../../../../assets/OnePager/Reviews/harsh.svg";
+import Nikhil from "../../../../assets/OnePager/Reviews/Nikhil.jpg";
+import Nikhil1 from "../../../../assets/OnePager/Reviews/Nikhil1.jpg";
+import harsh from "../../../../assets/OnePager/Reviews/harsh.jpg";
 import guptaImg from "../../../../assets/Masters/guptaImg.png";
 import guptaLogo from "../../../../assets/Masters/guptaLogo.png";
 import handaImg from "../../../../assets/Masters/handaImg.png";
